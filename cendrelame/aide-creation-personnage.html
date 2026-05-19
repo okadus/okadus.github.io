@@ -1,0 +1,1972 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cendrelame - Aide de création de personnage</title>
+  <link rel="icon" href="assets/favicon-cendrelame.svg" type="image/svg+xml">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #151311;
+      --iron: #24201c;
+      --iron-2: #332d27;
+      --bone: #f5efe1;
+      --paper: #e7d8b9;
+      --muted: #b7aa91;
+      --ember: #e24f32;
+      --ember-soft: #ffb16b;
+      --verdigris: #6fa292;
+      --moss: #526f5d;
+      --line: rgba(245, 239, 225, .17);
+      --shadow: 0 22px 80px rgba(0, 0, 0, .42);
+      --max: 1180px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, #14100d 0%, #1c1814 38%, #e6d8bd 38%, #f4ecdd 72%, #14110e 72%, #171310 100%);
+      color: var(--bone);
+      min-width: 320px;
+    }
+
+    body::selection {
+      background: var(--ember);
+      color: var(--bone);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      overflow: hidden;
+      display: grid;
+      align-items: end;
+      isolation: isolate;
+      background: #181410;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(90deg, rgba(16, 13, 11, .98), rgba(16, 13, 11, .75) 38%, rgba(16, 13, 11, .28) 70%, rgba(16, 13, 11, .52)),
+        linear-gradient(180deg, rgba(0, 0, 0, .18), transparent 44%, rgba(0, 0, 0, .78));
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 22svh;
+      z-index: -1;
+      background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .78));
+    }
+
+    .hero-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+      display: block;
+      object-fit: cover;
+      object-position: 58% 50%;
+      transform: scale(1.02);
+      animation: imageBreath 1400ms cubic-bezier(.2, .74, .2, 1) both;
+    }
+
+    .hero-inner {
+      width: min(var(--max), calc(100% - 36px));
+      margin: 0 auto;
+      padding: 24px 0 8svh;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--paper);
+      font-size: .78rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      animation: riseIn 800ms 160ms both;
+    }
+
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 44px;
+      height: 1px;
+      background: var(--ember);
+    }
+
+    h1,
+    h2,
+    h3,
+    .display {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 500;
+      letter-spacing: 0;
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin-top: 18px;
+      font-size: clamp(4rem, 12vw, 10.8rem);
+      line-height: .78;
+      color: var(--bone);
+      text-wrap: balance;
+      animation: riseIn 900ms 260ms both;
+    }
+
+    .hero-copy {
+      max-width: 520px;
+      margin-top: 26px;
+      color: rgba(245, 239, 225, .84);
+      font-size: clamp(1.06rem, 1.7vw, 1.28rem);
+      line-height: 1.55;
+      animation: riseIn 900ms 380ms both;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+      animation: riseIn 900ms 500ms both;
+    }
+
+    .button {
+      border: 1px solid rgba(245, 239, 225, .24);
+      color: var(--bone);
+      background: rgba(21, 19, 17, .74);
+      padding: 13px 17px;
+      border-radius: 4px;
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(245, 239, 225, .48);
+      background: rgba(21, 19, 17, .92);
+    }
+
+    .button.primary {
+      border-color: transparent;
+      background: var(--ember);
+      color: #fff8ed;
+      box-shadow: 0 18px 36px rgba(226, 79, 50, .22);
+    }
+
+    .button.primary:hover {
+      background: #f0603f;
+    }
+
+    .section {
+      position: relative;
+      padding: clamp(64px, 10vw, 120px) 0;
+    }
+
+    .section.dark {
+      background:
+        linear-gradient(180deg, rgba(21, 19, 17, .96), rgba(21, 19, 17, .98)),
+        repeating-linear-gradient(90deg, rgba(245, 239, 225, .05) 0 1px, transparent 1px 64px);
+      color: var(--bone);
+    }
+
+    .section.paper {
+      background: #efe5cf;
+      color: var(--ink);
+    }
+
+    .section.paper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(21, 19, 17, .08), transparent 16%, transparent 84%, rgba(21, 19, 17, .08)),
+        repeating-linear-gradient(0deg, rgba(21, 19, 17, .035) 0 1px, transparent 1px 42px);
+      opacity: .5;
+    }
+
+    .wrap {
+      position: relative;
+      width: min(var(--max), calc(100% - 36px));
+      margin: 0 auto;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(260px, .95fr);
+      gap: clamp(28px, 6vw, 80px);
+      align-items: end;
+      margin-bottom: clamp(34px, 6vw, 76px);
+    }
+
+    .section-kicker {
+      color: var(--ember);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: .76rem;
+      margin: 0 0 12px;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: clamp(2.2rem, 5.8vw, 5.8rem);
+      line-height: .92;
+      text-wrap: balance;
+    }
+
+    .section-lead {
+      margin: 0;
+      color: inherit;
+      opacity: .78;
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      line-height: 1.6;
+    }
+
+    .forge {
+      display: grid;
+      grid-template-columns: minmax(280px, .72fr) minmax(0, 1.28fr);
+      gap: clamp(22px, 4vw, 54px);
+      align-items: start;
+    }
+
+    .summary {
+      position: sticky;
+      top: 22px;
+      background: rgba(21, 19, 17, .78);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .summary-body {
+      padding: 22px;
+    }
+
+    .summary-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.65rem;
+      margin: 0 0 18px;
+    }
+
+    .meters {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .meter {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      min-width: 0;
+    }
+
+    .meter strong {
+      display: block;
+      font-size: clamp(1.45rem, 6vw, 2rem);
+      line-height: 1;
+      color: var(--paper);
+    }
+
+    .meter span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .chosen {
+      display: grid;
+      gap: 12px;
+      color: rgba(245, 239, 225, .86);
+      line-height: 1.45;
+      font-size: .96rem;
+    }
+
+    .chosen b {
+      display: block;
+      color: var(--ember-soft);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .forge-panel {
+      display: grid;
+      gap: 18px;
+    }
+
+    .choice-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(245, 239, 225, .045);
+    }
+
+    .attribute {
+      padding: 18px;
+      min-width: 0;
+      border-right: 1px solid var(--line);
+    }
+
+    .attribute:last-child {
+      border-right: 0;
+    }
+
+    .attribute label {
+      display: grid;
+      gap: 6px;
+      color: var(--paper);
+      font-size: .95rem;
+      font-weight: 700;
+    }
+
+    .attribute small {
+      color: var(--muted);
+      font-weight: 500;
+      min-height: 2.6em;
+    }
+
+    .attribute select {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 12px;
+      color: var(--bone);
+      background: rgba(21, 19, 17, .78);
+      border: 1px solid rgba(245, 239, 225, .22);
+      border-radius: 4px;
+      padding: 0 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--paper);
+      font-size: .84rem;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      font-weight: 700;
+    }
+
+    .field select,
+    .field input {
+      width: 100%;
+      min-height: 48px;
+      color: var(--bone);
+      background: rgba(21, 19, 17, .78);
+      border: 1px solid rgba(245, 239, 225, .22);
+      border-radius: 4px;
+      padding: 0 12px;
+    }
+
+    .field input::placeholder {
+      color: rgba(245, 239, 225, .4);
+    }
+
+    .info-panel {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .data-line {
+      display: grid;
+      grid-template-columns: minmax(120px, .35fr) minmax(0, .65fr);
+      gap: 18px;
+      align-items: start;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(245, 239, 225, .11);
+    }
+
+    .data-line:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .data-line b {
+      color: var(--ember-soft);
+    }
+
+    .data-line p {
+      margin: 0;
+      color: rgba(245, 239, 225, .78);
+      line-height: 1.55;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      border: 1px solid rgba(245, 239, 225, .18);
+      background: rgba(245, 239, 225, .07);
+      color: var(--paper);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: .86rem;
+      line-height: 1;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .score-chip {
+      display: grid;
+      min-height: 72px;
+      align-content: center;
+      gap: 5px;
+      background: rgba(245, 239, 225, .07);
+      border: 1px solid rgba(245, 239, 225, .13);
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    .score-chip strong {
+      color: var(--bone);
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .score-chip span {
+      color: var(--muted);
+      font-size: .79rem;
+      line-height: 1.25;
+    }
+
+    .custom-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+    }
+
+    .custom-skill {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .custom-skill label {
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .custom-skill select {
+      min-height: 44px;
+      width: 100%;
+      color: var(--bone);
+      background: rgba(21, 19, 17, .78);
+      border: 1px solid rgba(245, 239, 225, .22);
+      border-radius: 4px;
+      padding: 0 10px;
+    }
+
+    .skill-reference {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 24px;
+      border: 1px solid rgba(21, 19, 17, .18);
+      background: rgba(21, 19, 17, .18);
+    }
+
+    .skill-item {
+      background: #efe5cf;
+      padding: 14px 16px;
+      min-height: 104px;
+    }
+
+    .skill-item b {
+      color: var(--ink);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+    }
+
+    .skill-item em {
+      color: var(--moss);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: .78rem;
+      font-style: normal;
+      font-weight: 800;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .skill-item span {
+      color: rgba(21, 19, 17, .68);
+      display: block;
+      font-size: .92rem;
+      line-height: 1.4;
+    }
+
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 0;
+    }
+
+    .step {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 90px minmax(0, 1fr);
+      gap: clamp(16px, 3vw, 34px);
+      padding: clamp(24px, 4.6vw, 46px) 0;
+      border-top: 1px solid rgba(21, 19, 17, .18);
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 700ms ease, transform 700ms ease;
+    }
+
+    .step.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .step:last-child {
+      border-bottom: 1px solid rgba(21, 19, 17, .18);
+    }
+
+    .step-number {
+      display: grid;
+      place-items: start center;
+    }
+
+    .step-number::before {
+      content: counter(step, decimal-leading-zero);
+      width: 64px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      border: 1px solid rgba(21, 19, 17, .28);
+      border-radius: 50%;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.22rem;
+      background: rgba(255, 255, 255, .18);
+    }
+
+    .step h3 {
+      color: var(--ink);
+      font-size: clamp(1.55rem, 3vw, 2.5rem);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      max-width: 760px;
+      margin: 0;
+      color: rgba(21, 19, 17, .72);
+      font-size: 1.02rem;
+      line-height: 1.6;
+    }
+
+    .step .note {
+      margin-top: 14px;
+      color: rgba(21, 19, 17, .62);
+      font-size: .94rem;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      background: rgba(21, 19, 17, .18);
+      border: 1px solid rgba(21, 19, 17, .18);
+      margin-top: 24px;
+    }
+
+    .matrix div {
+      background: #efe5cf;
+      padding: 16px;
+      min-height: 118px;
+    }
+
+    .matrix b {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .matrix span {
+      color: rgba(21, 19, 17, .68);
+      line-height: 1.42;
+      display: block;
+    }
+
+    .random-table {
+      border-collapse: collapse;
+      color: rgba(21, 19, 17, .76);
+      font-size: .94rem;
+      margin-top: 22px;
+      max-width: 520px;
+      width: 100%;
+    }
+
+    .random-table caption {
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    .random-table th,
+    .random-table td {
+      border-bottom: 1px solid rgba(21, 19, 17, .18);
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    .random-table th {
+      color: var(--ink);
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .random-table td:last-child,
+    .random-table th:last-child {
+      text-align: right;
+    }
+
+    .souvenir-table {
+      max-width: 760px;
+    }
+
+    .atlas {
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+      gap: clamp(24px, 5vw, 72px);
+      align-items: start;
+    }
+
+    .atlas-sticky {
+      position: sticky;
+      top: 24px;
+    }
+
+    .origin-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .origin-group {
+      border: 1px solid var(--line);
+      background: rgba(245, 239, 225, .04);
+    }
+
+    .origin-group h3 {
+      border-bottom: 1px solid var(--line);
+      color: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: .86rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      padding: 16px;
+      text-transform: uppercase;
+    }
+
+    .origin-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .origin-item {
+      padding: 16px;
+      background: #181410;
+      min-height: 94px;
+      transition: background 180ms ease, transform 180ms ease;
+    }
+
+    .origin-item:hover {
+      background: #211c18;
+      transform: translateY(-2px);
+    }
+
+    .origin-item b {
+      display: block;
+      color: var(--bone);
+      margin-bottom: 7px;
+    }
+
+    .origin-item span {
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: .9rem;
+    }
+
+    .finish {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, .55fr);
+      gap: clamp(24px, 5vw, 72px);
+      align-items: end;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 1px;
+      background: rgba(245, 239, 225, .14);
+      border: 1px solid rgba(245, 239, 225, .14);
+    }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 14px 16px;
+      background: rgba(21, 19, 17, .84);
+      color: rgba(245, 239, 225, .84);
+    }
+
+    .check-row::before {
+      content: "";
+      width: 16px;
+      aspect-ratio: 1;
+      border: 1px solid var(--ember-soft);
+      margin-top: 3px;
+      border-radius: 3px;
+      background: linear-gradient(135deg, transparent 0 52%, rgba(226, 79, 50, .7) 52% 63%, transparent 63%);
+    }
+
+    .final-title {
+      font-size: clamp(2.4rem, 6vw, 5.6rem);
+      line-height: .9;
+      margin-bottom: 24px;
+      text-wrap: balance;
+    }
+
+    .final-copy {
+      color: rgba(245, 239, 225, .76);
+      line-height: 1.65;
+      margin: 0 0 28px;
+      max-width: 650px;
+    }
+
+    .print-sheet {
+      color: var(--ink);
+      background: #f4ead8;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .print-sheet h3 {
+      color: var(--ink);
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+
+    .print-sheet p {
+      margin: 0;
+      color: rgba(21, 19, 17, .72);
+      line-height: 1.55;
+    }
+
+    .sheet-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .sheet-block {
+      border-top: 1px solid rgba(21, 19, 17, .22);
+      padding-top: 10px;
+      min-width: 0;
+    }
+
+    .sheet-block.full {
+      grid-column: 1 / -1;
+    }
+
+    .sheet-block b {
+      color: var(--ink);
+      display: block;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .sheet-block p,
+    .sheet-list {
+      color: rgba(21, 19, 17, .75);
+      font-size: .92rem;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .sheet-list {
+      padding-left: 18px;
+    }
+
+    .sheet-skills {
+      border-collapse: collapse;
+      color: rgba(21, 19, 17, .8);
+      font-size: .8rem;
+      width: 100%;
+    }
+
+    .sheet-skills th,
+    .sheet-skills td {
+      border-bottom: 1px solid rgba(21, 19, 17, .16);
+      padding: 5px 4px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .sheet-skills th {
+      color: var(--ink);
+      font-size: .72rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .sheet-skills td:last-child,
+    .sheet-skills th:last-child {
+      text-align: right;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 760ms ease, transform 760ms ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .screen-reader {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(26px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes imageBreath {
+      from {
+        opacity: 0;
+        transform: scale(1.08);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1.02);
+      }
+    }
+
+    @media (max-width: 960px) {
+      .section-head,
+      .forge,
+      .atlas,
+      .finish {
+        grid-template-columns: 1fr;
+      }
+
+      .summary,
+      .atlas-sticky {
+        position: relative;
+        top: auto;
+      }
+
+      .choice-strip,
+      .matrix,
+      .custom-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .attribute:nth-child(2) {
+        border-right: 0;
+      }
+
+      .attribute:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .hero-inner,
+      .wrap {
+        width: min(100% - 28px, var(--max));
+      }
+
+      h1 {
+        font-size: clamp(3.5rem, 18vw, 6.6rem);
+      }
+
+      .hero {
+        min-height: 92svh;
+      }
+
+      .hero-copy {
+        max-width: 92%;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .form-grid,
+      .score-grid,
+      .origin-grid,
+      .origin-list,
+      .custom-grid,
+      .skill-reference,
+      .sheet-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sheet-block.full {
+        grid-column: auto;
+      }
+
+      .choice-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .attribute {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .attribute:last-child {
+        border-bottom: 0;
+      }
+
+      .data-line {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .step {
+        grid-template-columns: 1fr;
+      }
+
+      .step-number {
+        place-items: start;
+      }
+
+      .matrix {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        color: black;
+      }
+
+      .hero,
+      main > section:not(#pret),
+      #pret .reveal,
+      #pret .checklist,
+      #pret .hero-actions,
+      #pret .button {
+        display: none !important;
+      }
+
+      #pret {
+        background: white;
+        color: black;
+        padding: 0;
+      }
+
+      #pret .wrap {
+        width: 100%;
+      }
+
+      .finish {
+        display: block;
+      }
+
+      .print-sheet {
+        box-shadow: none;
+        border: 1px solid #222;
+        color: black;
+        padding: 14mm;
+      }
+
+      .sheet-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero" id="haut">
+    <img class="hero-image" src="assets/hero-harn-terres-sauvages.jpg" alt="Forêt sauvage de montagne, image de campagne Hârn">
+    <div class="hero-inner">
+      <p class="eyebrow">Aide joueurs</p>
+      <h1>Cendrelame</h1>
+      <p class="hero-copy">Forge ton personnage en dix étapes : une origine, une profession, quelques scores qui comptent, puis une faiblesse et un souvenir pour que la fiche respire déjà en scène.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#forge">Commencer la création</a>
+        <a class="button" href="#etapes">Voir les 10 étapes</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section dark" id="forge">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <p class="section-kicker">La forge de personnage</p>
+            <h2 class="section-title">Créez votre aventurier</h2>
+          </div>
+          <p class="section-lead">Cette zone résume les choix mécaniques essentiels. Les valeurs dérivées et le rappel de profession se mettent à jour pendant que tu construis le personnage.</p>
+        </div>
+
+        <div class="forge">
+          <aside class="summary reveal" aria-live="polite">
+            <div class="summary-body">
+              <h3 class="summary-title">Feuille en cours</h3>
+              <div class="meters">
+                <div class="meter">
+                  <strong id="vitalite">32</strong>
+                  <span>Vitalité</span>
+                </div>
+                <div class="meter">
+                  <strong id="sangFroid">31</strong>
+                  <span>Sang-froid</span>
+                </div>
+                <div class="meter">
+                  <strong id="pouvoir">10</strong>
+                  <span>PP si magie</span>
+                </div>
+                <div class="meter">
+                  <strong>2</strong>
+                  <span>Souffle</span>
+                </div>
+              </div>
+              <div class="chosen">
+                <div>
+                  <b>Origine</b>
+                  <span id="originSummary">Humains · Adaptabilité</span>
+                </div>
+                <div>
+                  <b>Profession</b>
+                  <span id="professionSummary">Soldat · Formation militaire ou Tenir la ligne</span>
+                </div>
+                <div>
+                  <b>Identité</b>
+                  <span id="identitySummary">Nom à inscrire, faiblesse à choisir, souvenir à garder.</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <div class="forge-panel reveal">
+            <div class="choice-strip" aria-label="Attributs">
+              <div class="attribute">
+                <label for="vigueur">Vigueur
+                  <small>Puissance, impact, résistance. État : Épuisé.</small>
+                </label>
+                <select id="vigueur" data-attribute="vigueur">
+                  <option>12</option>
+                  <option>11</option>
+                  <option>10</option>
+                  <option>9</option>
+                  <option>8</option>
+                  <option>13</option>
+                </select>
+              </div>
+              <div class="attribute">
+                <label for="agilite">Agilité
+                  <small>Vitesse, coordination, précision. État : Entravé.</small>
+                </label>
+                <select id="agilite" data-attribute="agilite">
+                  <option>11</option>
+                  <option>12</option>
+                  <option>10</option>
+                  <option>9</option>
+                  <option>8</option>
+                  <option>13</option>
+                </select>
+              </div>
+              <div class="attribute">
+                <label for="esprit">Esprit
+                  <small>Perception, savoir, technique, magie. État : Confus.</small>
+                </label>
+                <select id="esprit" data-attribute="esprit">
+                  <option>10</option>
+                  <option>12</option>
+                  <option>11</option>
+                  <option>9</option>
+                  <option>8</option>
+                  <option>13</option>
+                </select>
+              </div>
+              <div class="attribute">
+                <label for="volonte">Volonté
+                  <small>Aplomb, autorité, empathie. État : Ébranlé.</small>
+                </label>
+                <select id="volonte" data-attribute="volonte">
+                  <option>9</option>
+                  <option>12</option>
+                  <option>11</option>
+                  <option>10</option>
+                  <option>8</option>
+                  <option>13</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="originGroupSelect">Groupe d’origines</label>
+                <select id="originGroupSelect"></select>
+              </div>
+              <div class="field">
+                <label for="originSelect">Origine</label>
+                <select id="originSelect"></select>
+              </div>
+              <div class="field">
+                <label for="professionSelect">Profession</label>
+                <select id="professionSelect"></select>
+              </div>
+              <div class="field">
+                <label for="professionTalentSelect">Talent de profession</label>
+                <select id="professionTalentSelect"></select>
+              </div>
+              <div class="field">
+                <label for="characterName">Nom du personnage</label>
+                <input id="characterName" placeholder="Nom, surnom, titre ou sobriquet">
+              </div>
+              <div class="field">
+                <label for="weaknessInput">Faiblesse</label>
+                <select id="weaknessInput"></select>
+              </div>
+              <div class="field">
+                <label for="memoryInput">Souvenir</label>
+                <input id="memoryInput" list="souvenirOptions" placeholder="Médaillon, lettre, dés d’os...">
+              </div>
+              <div class="field">
+                <label for="appearanceInput">Âge et apparence</label>
+                <input id="appearanceInput" placeholder="Âge, allure, vêtements, posture...">
+              </div>
+            </div>
+
+            <datalist id="souvenirOptions"></datalist>
+
+            <div class="info-panel">
+              <div class="data-line">
+                <b>Talent d’origine</b>
+                <p id="originTalentText">Adaptabilité : 1/séance, vous pouvez lancer un jet avec une aubaine sur une compétence de votre choix.</p>
+              </div>
+              <div class="data-line">
+                <b>Formations de profession</b>
+                <div class="score-grid" id="professionSkills"></div>
+              </div>
+              <div class="data-line">
+                <b>Talents au choix</b>
+                <p id="professionTalents">Talent choisi : Formation militaire.</p>
+              </div>
+              <div class="data-line">
+                <b>Compétences libres</b>
+                <div class="custom-grid" id="customSkillChoices"></div>
+              </div>
+              <div class="data-line">
+                <b>Équipement</b>
+                <p id="professionGear">Tronc commun, lance courte, épée courte ou masse, rondache ou écu, gambison ou plastron de cuir, cervelière, sifflet, 1d6 PA et 1d6 rations.</p>
+              </div>
+              <div class="data-line">
+                <b>Rappel</b>
+                <p>Score final de compétence = formation + attribut lié. Une compétence sans formation commence seulement avec son attribut.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper" id="etapes">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <p class="section-kicker">Procédure de création</p>
+            <h2 class="section-title">Dix étape, un aventurier.</h2>
+          </div>
+          <p class="section-lead">Suis l’ordre si tu veux aller vite. Reviens en arrière quand une idée de personnage devient plus nette : Cendrelame accepte les ajustements tant que les scores ne se cumulent pas.</p>
+        </div>
+
+        <div class="steps">
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Définis les attributs</h3>
+              <p>Répartis 12, 11, 10 et 9 entre Vigueur, Agilité, Esprit et Volonté, ou lance 2d6 pour chaque attribut avec la table aléatoire.</p>
+              <div class="matrix">
+                <div><b>Vigueur</b><span>Puissance physique, endurance, choc, lutte. État associé : Épuisé.</span></div>
+                <div><b>Agilité</b><span>Vitesse, coordination, précision, discrétion. État associé : Entravé.</span></div>
+                <div><b>Esprit</b><span>Perception, savoir, raisonnement, technique, magie. État associé : Confus.</span></div>
+                <div><b>Volonté</b><span>Aplomb, autorité, charme, empathie, résistance mentale. État associé : Ébranlé.</span></div>
+              </div>
+              <table class="random-table">
+                <caption>Méthode aléatoire</caption>
+                <thead>
+                  <tr>
+                    <th>Résultat du 2d6</th>
+                    <th>Score d’attribut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>2-3</td><td>8</td></tr>
+                  <tr><td>4-5</td><td>9</td></tr>
+                  <tr><td>6-7</td><td>10</td></tr>
+                  <tr><td>8-9</td><td>11</td></tr>
+                  <tr><td>10-11</td><td>12</td></tr>
+                  <tr><td>12</td><td>13</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Choisis l’origine</h3>
+              <p>L’origine donne un talent propre et, une fois par séance, une aubaine à un test clairement lié à ton corps, ta culture, ta mémoire ou ta nature surnaturelle.</p>
+              <p class="note">Selon la campagne, certaines origines rares ou spectaculaires peuvent demander l’accord du MJ.</p>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Choisis la profession</h3>
+              <p>La profession raconte ce que ton personnage savait faire avant l’aventure. Elle donne cinq formations : 40, 35, 30, 25 et 20, un choix entre deux talents et un équipement de départ.</p>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Personnalise les compétences</h3>
+              <p>Ajoute cinq formations libres : 40, 35, 30, 25 et 20. Elles ne se cumulent pas avec celles de la profession : si tu renforces la même compétence, garde le meilleur score.</p>
+              <p class="note">Le score final se calcule ainsi : formation + attribut lié.</p>
+              <div class="skill-reference" id="skillReference" aria-label="Liste des compétences de Cendrelame"></div>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Note les talents</h3>
+              <p>Inscris le talent d’origine et le talent choisi dans ta profession. Les talents sont rares, visibles en jeu et doivent raconter une vraie manière d’agir.</p>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Calcule les réserves</h3>
+              <p>Vitalité = 20 + Vigueur. Sang-froid = 20 + Volonté. Les points de pouvoir valent (Esprit + Volonté) / 2, arrondi à l’inférieur, seulement si le personnage lance des sorts. Tout le monde commence avec 2 points de Souffle.</p>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Choisis une faiblesse</h3>
+              <p>La faiblesse est une faille qui complique une décision ou attire des ennuis. Si elle crée une vraie complication en jeu, le MJ peut autoriser une coche de compétence en fin de séance.</p>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Note l’équipement</h3>
+              <p>Commence avec le tronc commun, le paquetage de profession, la bourse indiquée et 1d6 rations de voyage. Les rations peuvent être suivies comme une réserve ∆6.</p>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Choisis un souvenir</h3>
+              <p>Le souvenir est un petit objet sentimental. Une fois par séance, pendant un repos court, il peut aider à récupérer un état supplémentaire.</p>
+              <table class="random-table souvenir-table">
+                <caption>Souvenirs possibles</caption>
+                <thead>
+                  <tr>
+                    <th>d20</th>
+                    <th>Souvenir</th>
+                  </tr>
+                </thead>
+                <tbody id="souvenirRows"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number"></div>
+            <div>
+              <h3>Termine l’identité</h3>
+              <p>Ajoute le nom, l’âge, l’apparence, la voix et l’image mentale. C’est là que la fiche devient une personne.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="origines">
+      <div class="wrap atlas">
+        <div class="atlas-sticky reveal">
+          <p class="section-kicker">Origines disponibles</p>
+          <h2 class="section-title">Origines.</h2>
+          <p class="section-lead">Les origines ci-dessous sont les seules jouables à la création. Chaque groupe correspond à une disponibilité de campagne différente ; choisis le groupe annoncé par le MJ.</p>
+        </div>
+        <div class="origin-grid reveal" id="originGrid"></div>
+      </div>
+    </section>
+
+    <section class="section dark" id="pret">
+      <div class="wrap finish">
+        <div class="reveal">
+          <p class="section-kicker">Avant la première scène</p>
+          <h2 class="final-title">La fiche est prête quand elle donne envie de jouer.</h2>
+          <p class="final-copy">Vérifie les calculs, puis ajoute une envie et une peur. La mécanique pose l’ossature ; la première décision en jeu mettra le sang dedans.</p>
+          <div class="hero-actions">
+            <button class="button primary" id="printButton" type="button">Imprimer la feuille</button>
+            <a class="button" href="#haut">Revenir en haut</a>
+          </div>
+        </div>
+        <div class="checklist reveal">
+          <div class="check-row">Attributs notés et états associés compris.</div>
+          <div class="check-row">Origine, talent d’origine et aubaine 1/séance notés.</div>
+          <div class="check-row">Profession, formations, talent choisi et équipement notés.</div>
+          <div class="check-row">Vitalité, Sang-froid, PP éventuels et Souffle calculés.</div>
+          <div class="check-row">Faiblesse, souvenir, âge et apparence choisis.</div>
+        </div>
+        <div class="print-sheet" aria-label="Feuille de personnage imprimable">
+          <h3 id="printName">Personnage de Cendrelame</h3>
+          <p id="printSummary">Humains, Soldat. Vitalité 32, Sang-froid 29, Souffle 2.</p>
+          <div class="sheet-grid">
+            <div class="sheet-block">
+              <b>Attributs</b>
+              <p id="printAttributes"></p>
+            </div>
+            <div class="sheet-block">
+              <b>Réserves</b>
+              <p id="printDerived"></p>
+            </div>
+            <div class="sheet-block">
+              <b>Origine</b>
+              <p id="printOrigin"></p>
+            </div>
+            <div class="sheet-block">
+              <b>Profession</b>
+              <p id="printProfession"></p>
+            </div>
+            <div class="sheet-block full">
+              <b>Formations de profession</b>
+              <ul class="sheet-list" id="printProfessionSkills"></ul>
+            </div>
+            <div class="sheet-block full">
+              <b>Compétences libres</b>
+              <ul class="sheet-list" id="printCustomSkills"></ul>
+            </div>
+            <div class="sheet-block full">
+              <b>Compétences calculées</b>
+              <table class="sheet-skills">
+                <thead>
+                  <tr>
+                    <th>Compétence</th>
+                    <th>Attribut</th>
+                    <th>Formation</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody id="printSkillRows"></tbody>
+              </table>
+            </div>
+            <div class="sheet-block full">
+              <b>Équipement</b>
+              <p id="printGear"></p>
+            </div>
+            <div class="sheet-block full">
+              <b>Détails</b>
+              <p id="printDetails"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const originGroupLabels = {
+      group1: "Groupe 1",
+      group2: "Groupe 2"
+    };
+
+    const originGroupOrder = ["group1", "group2"];
+
+    const origins = [
+      { name: "Humains", label: "Humains", talent: "Adaptabilité", groups: ["group1", "group2"], text: "1/séance, vous pouvez lancer un jet avec une aubaine sur une compétence de votre choix." },
+      { name: "Mallards", label: "Mallards", talent: "Qu’ils rient", groups: ["group1", "group2"], text: "1/scène, quand quelqu’un vous sous-estime ou vous tourne en ridicule, vous avez une aubaine à votre prochaine action contre lui." },
+      { name: "Félyns", label: "Félyns", talent: "Sur les toits", groups: ["group1", "group2"], text: "Vous gagnez +10 % aux jets d’Athlétisme pour grimper, escalader ou vous rétablir en hauteur sans armure lourde." },
+      { name: "Gnomes", label: "Gnomes", talent: "Génie de fortune", groups: ["group1", "group2"], text: "1/scène, avec outils ou matériaux, vous avez une aubaine pour réparer, saboter ou improviser un dispositif simple." },
+      { name: "Ondéens", label: "Ondéens", talent: "Lecture des courants", groups: ["group1"], text: "Vous nagez plus vite que les créatures non aquatiques. 1/scène, vous avez une aubaine pour lire un courant ou prévoir un danger lié à l’eau." },
+      { name: "Sylvériens", label: "Sylvériens", groupLabels: { group2: "Sylvériens (elfes)" }, talent: "Murmure des racines", groups: ["group1", "group2"], text: "1/scène, dans un lieu naturel, vous avez une aubaine pour percevoir déséquilibre, corruption, présence cachée ou Souffle inhabituel." },
+      { name: "Faunes", label: "Faunes", talent: "Bond caprin", groups: ["group1"], text: "Vous franchissez les obstacles proches comme un déplacement normal ; après une attaque de Mêlée réussie, vous pouvez dépenser 1 Souffle pour vous dégager ou repousser." },
+      { name: "Sauriens", label: "Sauriens", talent: "Patience froide", groups: ["group1"], text: "1/scène, quand vous prenez le temps d’observer avant d’agir, vous avez une aubaine pour observer, traquer ou tendre une embuscade." },
+      { name: "Khordrims", label: "Khordrims (nains)", talent: "Serment de pierre", groups: ["group1", "group2"], text: "1/scène, vous avez une aubaine à un jet directement lié à un serment que vous avez formulé." },
+      { name: "Lupéens", label: "Lupéens", talent: "Proie désignée", groups: ["group1", "group2"], text: "Par une action en combat, désignez une créature vue ou sentie : vous suivez son odeur un jour et pouvez dépenser 1 Souffle pour une aubaine contre elle." },
+      { name: "Kharoks", label: "Kharoks", talent: "Échine de fer", groups: ["group1", "group2"], text: "1/scène, après une blessure ou une peur, vous ignorez le premier désavantage subi jusqu’à la fin de votre prochaine action." },
+      { name: "Elfes des neiges", label: "Elfes des neiges", talent: "Né du blizzard", groups: ["group1"], text: "Vous commencez avec deux sorts liés à la glace." },
+      { name: "Corvyns", label: "Corvyns", talent: "Regard des hauteurs", groups: ["group1"], text: "Vous pouvez voler si vous n’êtes ni lourdement armé ni encombré. 1/scène, l’observation depuis les hauteurs donne une aubaine." },
+      { name: "Drakéides", label: "Drakéides", talent: "Héritage draconique", groups: ["group1"], text: "Choisissez un élément. 1/scène, sur un jet réussi, votre souffle inflige 1d6 dégâts à toutes les cibles proches." }
+    ];
+
+    const souvenirs = [
+      "Vieilles chaussures usées",
+      "Médaillon d’argent simple",
+      "Lettre d’un ami, d’un parent ou d’un ancien compagnon",
+      "Journal abîmé",
+      "Bracelet familial",
+      "Figurine de bois reçue dans l’enfance",
+      "Pierre étrange",
+      "Pièce de cuivre liée à la quête d’un parent",
+      "Vieille chope en étain",
+      "Corne prise sur un monstre",
+      "Croc pris sur une bête",
+      "Dés d’os",
+      "Médaillon contenant une mèche de cheveux",
+      "Clé ouvragée",
+      "Carte héritée",
+      "Bague gravée",
+      "Sifflet en os",
+      "Vieux chapeau d’un parent",
+      "Plume de griffon",
+      "Pipe finement sculptée"
+    ];
+
+    const weaknesses = [
+      "Crédule",
+      "Cupide",
+      "Susceptible",
+      "Téméraire",
+      "Timoré",
+      "Tueur de monstres",
+      "Intolérant",
+      "Paresseux",
+      "Gourmand",
+      "Kleptomane",
+      "Vaniteux",
+      "Imprudent",
+      "Peur de la magie",
+      "Avide de savoir",
+      "Enfant de la nature",
+      "Vantard",
+      "Violent",
+      "Autoritaire",
+      "Pessimiste",
+      "Hautain"
+    ];
+
+    const skills = [
+      ["Acrobatie", "Agilité", "équilibre, roulades, chutes, contorsions, déplacements périlleux"],
+      ["Alchimie", "Esprit", "remèdes, poisons, poudres, huiles, ingrédients, préparations occultes"],
+      ["Art de la guerre", "Esprit", "plans de bataille, analyse tactique, embuscades larges, guerre de mouvement"],
+      ["Artisanat", "Vigueur", "réparer, fabriquer, entretenir l’équipement, travailler la matière"],
+      ["Athlétisme", "Vigueur", "courir, grimper, sauter, nager, fournir un effort brutal"],
+      ["Commandement", "Volonté", "ordres, moral d’un groupe, autorité sur des troupes, manœuvres coordonnées"],
+      ["Éloquence", "Volonté", "convaincre, négocier par la parole, apaiser, séduire, plaider"],
+      ["Enquête", "Esprit", "fouiller une scène, recouper des indices, interroger des témoins, comprendre une affaire"],
+      ["Équitation", "Agilité", "monter, contrôler une bête, conduire un chariot ou une monture de guerre"],
+      ["Érudition", "Esprit", "savoirs, histoire, ingénierie, machines, fortifications, coutumes, théorie savante"],
+      ["Esquive", "Agilité", "éviter une attaque, un piège, un danger soudain"],
+      ["Furtivité", "Agilité", "se cacher, se déplacer sans bruit, tendre une embuscade"],
+      ["Intimidation", "Volonté", "menacer, imposer, provoquer, tenir quelqu’un sous pression"],
+      ["Intuition", "Volonté", "lire les intentions, sentir les tensions, discerner mensonges et non-dits"],
+      ["Jeu", "Volonté", "jeux de hasard ou de stratégie, paris, lecture d’une table, dettes, triche sociale"],
+      ["Langues et écritures", "Esprit", "lire, traduire, déchiffrer, comprendre dialectes ou textes anciens"],
+      ["Larcin", "Agilité", "crochetage, vol, fouille discrète, gestes rapides, sabotage simple"],
+      ["Magie", "Esprit", "lancer des sorts, comprendre la théorie magique, identifier sceaux et phénomènes occultes"],
+      ["Médecine", "Esprit", "premiers secours, maladies, blessures graves, infection, chirurgie simple"],
+      ["Mêlée", "Vigueur", "attaquer au corps à corps"],
+      ["Navigation", "Esprit", "tenir un cap, lire les routes, préparer un trajet, gérer les déplacements"],
+      ["Négoce", "Volonté", "prix, contrats, soldes, dettes, marchés noirs, estimation de valeur"],
+      ["Parade", "Vigueur", "bloquer ou détourner une attaque avec arme, bouclier ou force d’opposition"],
+      ["Représentation", "Volonté", "chant, musique, théâtre, récit, danse, captiver une foule ou distraire"],
+      ["Savoir interdit", "Esprit", "démons, morts-vivants, cultes, malédictions, hérésies, vrais noms"],
+      ["Survie", "Esprit", "piste, campement, chasse, météo, nature, orientation sauvage"],
+      ["Théologie", "Esprit", "religions, dieux, rites, dogmes, clergés, hérésies publiques, cérémonies"],
+      ["Tir", "Agilité", "attaquer à distance"],
+      ["Tromperie", "Volonté", "mentir, se déguiser, manipuler, dissimuler ses intentions"],
+      ["Vigilance", "Esprit", "perception, garde, embuscades, détails, danger"]
+    ];
+
+    const attributeMap = {
+      "Vigueur": "vigueur",
+      "Agilité": "agilite",
+      "Esprit": "esprit",
+      "Volonté": "volonte"
+    };
+
+    const customScores = [40, 35, 30, 25, 20];
+    const defaultCustomSkills = ["Athlétisme", "Esquive", "Survie", "Intuition", "Éloquence"];
+
+    const professions = {
+      "Alchimiste": {
+        skills: [["Alchimie", 40], ["Artisanat", 35], ["Magie", 30], ["Médecine", 25], ["Érudition", 20]],
+        talents: "Archiviste ou Herboriste",
+        gear: "Couteau, carnet de notes, craie, lampe à huile, huile de lampe, décoction de plantes, outils d’alchimie simples, 1d8 PA et 1d6 rations."
+      },
+      "Artisan": {
+        skills: [["Artisanat", 40], ["Négoce", 35], ["Intuition", 30], ["Éloquence", 25], ["Érudition", 20]],
+        talents: "Armurier ou Parcimonieux",
+        gear: "Couteau, marteau, aiguille et fil, corde de chanvre, outils de métier simples, 1d8 PA et 1d6 rations."
+      },
+      "Berger": {
+        skills: [["Survie", 40], ["Vigilance", 35], ["Équitation", 30], ["Intuition", 25], ["Tir", 20]],
+        talents: "Ami des bêtes ou Compagnon animal",
+        gear: "Bâton, couteau, sifflet, collet, panier, 1d6 PA et 1d6 rations."
+      },
+      "Bûcheron": {
+        skills: [["Artisanat", 40], ["Survie", 35], ["Athlétisme", 30], ["Mêlée", 25], ["Vigilance", 20]],
+        talents: "Coups puissants ou Endurci",
+        gear: "Hache, couteau, scie, corde de chanvre, cape, 1d6 PA et 1d6 rations."
+      },
+      "Chasseur": {
+        skills: [["Survie", 40], ["Tir", 35], ["Furtivité", 30], ["Vigilance", 25], ["Athlétisme", 20]],
+        talents: "Forestier ou Tireur d’élite",
+        gear: "Arc court et couteau, carquois de flèches, collet, cape, 1d6 PA et 1d6 rations."
+      },
+      "Débrouillard": {
+        skills: [["Larcin", 40], ["Tromperie", 35], ["Jeu", 30], ["Acrobatie", 25], ["Vigilance", 20]],
+        talents: "Mains rapides ou Toujours un plan",
+        gear: "Dague ou couteau, outils de crochetage simples, cartes à jouer ou dés, billes, cape, 1d10 PA et 1d6 rations."
+      },
+      "Érudit": {
+        skills: [["Érudition", 40], ["Langues et écritures", 35], ["Magie", 30], ["Théologie", 25], ["Intuition", 20]],
+        talents: "Archiviste ou Mémoire vive",
+        gear: "Bâton ou couteau, carnet de notes, plume et encre, cinq parchemins, bougie de suif, 1d10 PA et 1d6 rations."
+      },
+      "Fermier": {
+        skills: [["Survie", 40], ["Artisanat", 35], ["Équitation", 30], ["Négoce", 25], ["Vigilance", 20]],
+        talents: "Endurci ou Péquenauds",
+        gear: "Gourdin de bois petit ou couteau, pelle, panier, corde de chanvre, 1d6 PA et 1d6 rations."
+      },
+      "Garde": {
+        skills: [["Vigilance", 40], ["Parade", 35], ["Mêlée", 30], ["Intimidation", 25], ["Enquête", 20]],
+        talents: "Gardien ou Maître du bouclier",
+        gear: "Épée courte ou masse, rondache, gambison, cervelière, sifflet, 1d6 PA et 1d6 rations."
+      },
+      "Herboriste": {
+        skills: [["Médecine", 40], ["Survie", 35], ["Alchimie", 30], ["Vigilance", 25], ["Érudition", 20]],
+        talents: "Chirurgien ou Herboriste",
+        gear: "Couteau, bandages, décoction de plantes, carnet de notes, panier, 1d8 PA et 1d6 rations."
+      },
+      "Intendant": {
+        skills: [["Négoce", 40], ["Éloquence", 35], ["Enquête", 30], ["Érudition", 25], ["Commandement", 20]],
+        talents: "Intendant ou Parcimonieux",
+        gear: "Dague, carnet de notes, plume et encre, boulier, cadenas, habits de qualité, 1d12 PA et 1d6 rations."
+      },
+      "Mage": {
+        skills: [["Magie", 40], ["Savoir interdit", 35], ["Érudition", 30], ["Langues et écritures", 25], ["Intuition", 20]],
+        talents: "Don ou Magie contrôlée",
+        gear: "Bâton ou dague, craie, bougie de suif, amulette ou baguette, carnet de notes, 1d8 PA et 1d6 rations."
+      },
+      "Marin": {
+        skills: [["Navigation", 40], ["Athlétisme", 35], ["Survie", 30], ["Artisanat", 25], ["Jeu", 20]],
+        talents: "Agile ou Bacchus",
+        gear: "Couteau ou gourdin de bois petit, corde de chanvre, grappin, dés, cape, 1d10 PA et 1d6 rations."
+      },
+      "Médecin": {
+        skills: [["Médecine", 40], ["Alchimie", 35], ["Érudition", 30], ["Intuition", 25], ["Enquête", 20]],
+        talents: "Chirurgien ou Mémoire vive",
+        gear: "Couteau, bandages, instruments chirurgicaux, décoction de plantes, carnet de notes, 1d10 PA et 1d6 rations."
+      },
+      "Ménestrel": {
+        skills: [["Représentation", 40], ["Éloquence", 35], ["Tromperie", 30], ["Intuition", 25], ["Jeu", 20]],
+        talents: "Musicien ou Séducteur",
+        gear: "Dague, instrument de musique, habits de qualité, cartes à jouer ou dés, parfum, 1d8 PA et 1d6 rations."
+      },
+      "Messager": {
+        skills: [["Athlétisme", 40], ["Équitation", 35], ["Acrobatie", 30], ["Vigilance", 25], ["Furtivité", 20]],
+        talents: "Éclaireur ou Né en selle",
+        gear: "Bâton ou couteau, cape, sifflet, carte, 1d8 PA et 1d6 rations."
+      },
+      "Mineur": {
+        skills: [["Artisanat", 40], ["Athlétisme", 35], ["Vigilance", 30], ["Érudition", 25], ["Mêlée", 20]],
+        talents: "Endurci ou Sang-froid d’acier",
+        gear: "Couteau, pioche, lampe à huile, huile de lampe, cervelière, 1d8 PA et 1d6 rations."
+      },
+      "Pêcheur": {
+        skills: [["Survie", 40], ["Navigation", 35], ["Artisanat", 30], ["Vigilance", 25], ["Jeu", 20]],
+        talents: "Calme ou Péquenauds",
+        gear: "Couteau, filet de pêche, canne à pêche, corde de chanvre, panier, 1d6 PA et 1d6 rations."
+      },
+      "Prêtre": {
+        skills: [["Théologie", 40], ["Éloquence", 35], ["Médecine", 30], ["Magie", 25], ["Savoir interdit", 20]],
+        talents: "Inspirant ou Résistance magique",
+        gear: "Bâton ou masse, reliquaire ou amulette, bandages, bougie de suif, trois parchemins, 1d10 PA et 1d6 rations."
+      },
+      "Soldat": {
+        skills: [["Mêlée", 40], ["Parade", 35], ["Tir", 30], ["Vigilance", 25], ["Art de la guerre", 20]],
+        talents: "Formation militaire ou Tenir la ligne",
+        gear: "Lance courte, épée courte ou masse, rondache ou écu, gambison ou plastron de cuir, cervelière, sifflet, 1d6 PA et 1d6 rations."
+      }
+    };
+
+    const byId = (id) => document.getElementById(id);
+    const attributeIds = ["vigueur", "agilite", "esprit", "volonte"];
+    const originGroupSelect = byId("originGroupSelect");
+    const originSelect = byId("originSelect");
+    const professionSelect = byId("professionSelect");
+    const professionTalentSelect = byId("professionTalentSelect");
+    const professionSkills = byId("professionSkills");
+    const customSkillChoices = byId("customSkillChoices");
+    const skillReference = byId("skillReference");
+    const originGrid = byId("originGrid");
+    const souvenirRows = byId("souvenirRows");
+    const souvenirOptions = byId("souvenirOptions");
+
+    function fillOptions() {
+      originGroupOrder.forEach((group) => {
+        const option = document.createElement("option");
+        option.value = group;
+        option.textContent = originGroupLabels[group];
+        originGroupSelect.append(option);
+      });
+
+      updateOriginOptions(false);
+
+      Object.keys(professions).forEach((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        if (name === "Soldat") option.selected = true;
+        professionSelect.append(option);
+      });
+
+      originGroupOrder.forEach((group) => {
+        const section = document.createElement("section");
+        section.className = "origin-group";
+        const title = document.createElement("h3");
+        title.textContent = originGroupLabels[group];
+        const list = document.createElement("div");
+        list.className = "origin-list";
+        origins
+          .filter((origin) => origin.groups.includes(group))
+          .forEach((origin) => {
+            const item = document.createElement("div");
+            item.className = "origin-item";
+            item.innerHTML = `<b>${originLabel(origin, group)}</b><span>${origin.talent}</span>`;
+            list.append(item);
+          });
+        section.append(title, list);
+        originGrid.append(section);
+      });
+
+      skills.forEach(([name, attribute, usage]) => {
+        const item = document.createElement("div");
+        item.className = "skill-item";
+        item.innerHTML = `<b>${name}<em>${attribute}</em></b><span>${usage}</span>`;
+        skillReference.append(item);
+      });
+
+      customScores.forEach((score, index) => {
+        const field = document.createElement("div");
+        field.className = "custom-skill";
+        const label = document.createElement("label");
+        label.setAttribute("for", `customSkill${index}`);
+        label.textContent = `Formation ${score}`;
+        const select = document.createElement("select");
+        select.id = `customSkill${index}`;
+        select.dataset.customScore = String(score);
+        skills.forEach(([name]) => {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          if (name === defaultCustomSkills[index]) option.selected = true;
+          select.append(option);
+        });
+        field.append(label, select);
+        customSkillChoices.append(field);
+      });
+
+      souvenirs.forEach((souvenir, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${index + 1}</td><td>${souvenir}</td>`;
+        souvenirRows.append(row);
+
+        const option = document.createElement("option");
+        option.value = souvenir;
+        souvenirOptions.append(option);
+      });
+
+      weaknesses.forEach((weakness) => {
+        const option = document.createElement("option");
+        option.value = weakness;
+        option.textContent = weakness;
+        byId("weaknessInput").append(option);
+      });
+
+      updateProfessionTalentOptions();
+    }
+
+    function selectedOrigin() {
+      return origins.find((origin) => origin.name === originSelect.value) || origins[0];
+    }
+
+    function originLabel(origin, group) {
+      return origin.groupLabels?.[group] || origin.label;
+    }
+
+    function updateOriginOptions(preserveSelection = true) {
+      const previous = preserveSelection ? originSelect.value : "";
+      const group = originGroupSelect.value || "group1";
+      const available = origins.filter((origin) => origin.groups.includes(group));
+      originSelect.innerHTML = "";
+      available.forEach((origin) => {
+        const option = document.createElement("option");
+        option.value = origin.name;
+        option.textContent = originLabel(origin, group);
+        if ((previous && previous === origin.name) || (!previous && origin.name === "Humains")) option.selected = true;
+        originSelect.append(option);
+      });
+    }
+
+    function selectedProfession() {
+      return professions[professionSelect.value] || professions.Soldat;
+    }
+
+    function talentOptions(profession) {
+      return profession.talents.split(" ou ");
+    }
+
+    function updateProfessionTalentOptions() {
+      const previous = professionTalentSelect.value;
+      const talents = talentOptions(selectedProfession());
+      professionTalentSelect.innerHTML = "";
+      talents.forEach((talent, index) => {
+        const option = document.createElement("option");
+        option.value = talent;
+        option.textContent = talent;
+        if ((previous && previous === talent) || (!previous && index === 0)) option.selected = true;
+        professionTalentSelect.append(option);
+      });
+    }
+
+    function selectedCustomSkills() {
+      return customScores.map((score, index) => ({
+        score,
+        skill: byId(`customSkill${index}`).value
+      }));
+    }
+
+    function attributeValue(id) {
+      return Number(byId(id).value);
+    }
+
+    function formationsBySkill(profession, customSkills) {
+      const formations = new Map(skills.map(([name]) => [name, 0]));
+      profession.skills.forEach(([skill, score]) => {
+        formations.set(skill, Math.max(formations.get(skill) || 0, score));
+      });
+      customSkills.forEach(({ skill, score }) => {
+        formations.set(skill, Math.max(formations.get(skill) || 0, score));
+      });
+      return formations;
+    }
+
+    function updateSheet() {
+      const vigueur = attributeValue("vigueur");
+      const agilite = attributeValue("agilite");
+      const esprit = attributeValue("esprit");
+      const volonte = attributeValue("volonte");
+      const origin = selectedOrigin();
+      const originGroupKey = originGroupSelect.value || "group1";
+      const originGroup = originGroupLabels[originGroupKey];
+      const currentOriginLabel = originLabel(origin, originGroupKey);
+      const profession = selectedProfession();
+      const chosenTalent = professionTalentSelect.value || talentOptions(profession)[0];
+      const customSkills = selectedCustomSkills();
+      const formations = formationsBySkill(profession, customSkills);
+      const name = byId("characterName").value.trim();
+      const weakness = byId("weaknessInput").value.trim();
+      const memory = byId("memoryInput").value.trim();
+      const appearance = byId("appearanceInput").value.trim();
+
+      byId("vitalite").textContent = 20 + vigueur;
+      byId("sangFroid").textContent = 20 + volonte;
+      byId("pouvoir").textContent = Math.floor((esprit + volonte) / 2);
+      byId("originSummary").textContent = `${originGroup} · ${currentOriginLabel} · ${origin.talent}`;
+      byId("professionSummary").textContent = `${professionSelect.value} · ${chosenTalent}`;
+      byId("originTalentText").textContent = `${origin.talent} : ${origin.text}`;
+      byId("professionTalents").textContent = `Talent choisi : ${chosenTalent}. Options de profession : ${profession.talents}.`;
+      byId("professionGear").textContent = `Tronc commun, ${profession.gear}`;
+
+      professionSkills.innerHTML = "";
+      profession.skills.forEach(([skill, score]) => {
+        const chip = document.createElement("div");
+        chip.className = "score-chip";
+        chip.innerHTML = `<strong>${score}</strong><span>${skill}</span>`;
+        professionSkills.append(chip);
+      });
+
+      const identityParts = [];
+      if (name) identityParts.push(name);
+      if (weakness) identityParts.push(`faiblesse : ${weakness}`);
+      if (memory) identityParts.push(`souvenir : ${memory}`);
+      if (appearance) identityParts.push(appearance);
+      byId("identitySummary").textContent = identityParts.length ? identityParts.join(" · ") : "Nom à inscrire, faiblesse à choisir, souvenir à garder.";
+
+      byId("printName").textContent = name || "Personnage de Cendrelame";
+      byId("printSummary").textContent = `${originGroup}, ${currentOriginLabel}, ${professionSelect.value}. Vitalité ${20 + vigueur}, Sang-froid ${20 + volonte}, PP ${Math.floor((esprit + volonte) / 2)} si magie, Souffle 2.`;
+      byId("printAttributes").textContent = `Vigueur ${vigueur}, Agilité ${agilite}, Esprit ${esprit}, Volonté ${volonte}.`;
+      byId("printDerived").textContent = `Vitalité ${20 + vigueur}, Sang-froid ${20 + volonte}, PP ${Math.floor((esprit + volonte) / 2)} si magie, Souffle 2.`;
+      byId("printOrigin").textContent = `${originGroup}. ${currentOriginLabel}. Talent : ${origin.talent}. ${origin.text}`;
+      byId("printProfession").textContent = `${professionSelect.value}. Talent choisi : ${chosenTalent}.`;
+      byId("printGear").textContent = `Tronc commun, ${profession.gear}`;
+      byId("printDetails").textContent = `${weakness ? `Faiblesse : ${weakness}. ` : "Faiblesse : à choisir. "}${memory ? `Souvenir : ${memory}. ` : "Souvenir : à choisir. "}${appearance ? `Âge et apparence : ${appearance}.` : "Âge et apparence : à préciser."}`;
+
+      byId("printProfessionSkills").innerHTML = profession.skills
+        .map(([skill, score]) => `<li>${skill} ${score}</li>`)
+        .join("");
+      byId("printCustomSkills").innerHTML = customSkills
+        .map(({ skill, score }) => `<li>${skill} ${score}</li>`)
+        .join("");
+      byId("printSkillRows").innerHTML = skills
+        .map(([skill, attribute]) => {
+          const formation = formations.get(skill) || 0;
+          const finalScore = formation + attributeValue(attributeMap[attribute]);
+          return `<tr><td>${skill}</td><td>${attribute}</td><td>${formation}</td><td>${finalScore} %</td></tr>`;
+        })
+        .join("");
+    }
+
+    function setupReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add("in-view");
+        });
+      }, { threshold: 0.16 });
+
+      document.querySelectorAll(".reveal, .step").forEach((element) => observer.observe(element));
+    }
+
+    fillOptions();
+    updateSheet();
+    setupReveal();
+
+    professionSelect.addEventListener("change", () => {
+      updateProfessionTalentOptions();
+      updateSheet();
+    });
+
+    originGroupSelect.addEventListener("change", () => {
+      updateOriginOptions();
+      updateSheet();
+    });
+
+    [...attributeIds.map(byId), originSelect, professionTalentSelect, byId("characterName"), byId("weaknessInput"), byId("memoryInput"), byId("appearanceInput"), ...customScores.map((_, index) => byId(`customSkill${index}`))]
+      .forEach((element) => {
+        element.addEventListener("input", updateSheet);
+        element.addEventListener("change", updateSheet);
+      });
+
+    byId("printButton").addEventListener("click", () => window.print());
+  </script>
+</body>
+</html>
