@@ -1785,6 +1785,8 @@
         customSkillChoices.append(field);
       });
 
+      updateCustomSkillOptions();
+
       souvenirs.forEach((souvenir, index) => {
         const row = document.createElement("tr");
         row.innerHTML = `<td>${index + 1}</td><td>${souvenir}</td>`;
@@ -1845,6 +1847,45 @@
         option.textContent = talent;
         if ((previous && previous === talent) || (!previous && index === 0)) option.selected = true;
         professionTalentSelect.append(option);
+      });
+    }
+
+    function customSelectElements() {
+      return customScores.map((_, index) => byId(`customSkill${index}`));
+    }
+
+    function updateCustomSkillOptions() {
+      const blockedByProfession = new Set(selectedProfession().skills.map(([skill]) => skill));
+      const selects = customSelectElements();
+      const previousValues = selects.map((select, index) => select.value || defaultCustomSkills[index]);
+      const resolvedValues = [];
+      const used = new Set(blockedByProfession);
+
+      previousValues.forEach((value) => {
+        let nextValue = value;
+        if (!nextValue || used.has(nextValue)) {
+          nextValue = skills.find(([name]) => !used.has(name))?.[0] || "";
+        }
+        resolvedValues.push(nextValue);
+        if (nextValue) used.add(nextValue);
+      });
+
+      selects.forEach((select, index) => {
+        const currentValue = resolvedValues[index];
+        select.innerHTML = "";
+
+        skills.forEach(([name]) => {
+          const selectedElsewhere = resolvedValues.some((value, otherIndex) => otherIndex !== index && value === name);
+          if (blockedByProfession.has(name) || selectedElsewhere) return;
+
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          if (name === currentValue) option.selected = true;
+          select.append(option);
+        });
+
+        select.value = currentValue;
       });
     }
 
@@ -1952,6 +1993,7 @@
 
     professionSelect.addEventListener("change", () => {
       updateProfessionTalentOptions();
+      updateCustomSkillOptions();
       updateSheet();
     });
 
@@ -1960,11 +2002,18 @@
       updateSheet();
     });
 
-    [...attributeIds.map(byId), originSelect, professionTalentSelect, byId("characterName"), byId("weaknessInput"), byId("memoryInput"), byId("appearanceInput"), ...customScores.map((_, index) => byId(`customSkill${index}`))]
+    [...attributeIds.map(byId), originSelect, professionTalentSelect, byId("characterName"), byId("weaknessInput"), byId("memoryInput"), byId("appearanceInput")]
       .forEach((element) => {
         element.addEventListener("input", updateSheet);
         element.addEventListener("change", updateSheet);
       });
+
+    customSelectElements().forEach((element) => {
+      element.addEventListener("change", () => {
+        updateCustomSkillOptions();
+        updateSheet();
+      });
+    });
 
     byId("printButton").addEventListener("click", () => window.print());
   </script>
